@@ -1,0 +1,46 @@
+{
+  "name": "mp3-file-analysis-app",
+  "version": "1.0.0",
+  "description": "An MP3 File Analysis App",
+  "main": "index.ts",
+  "scripts": {
+    "dev": "tsx watch --clear-screen=false src/index.ts | pino-pretty",
+    "build": "tsup",
+    "start": "node dist/index.js",
+    "clean": "rimraf dist coverage",
+    "lint": "biome check src/",
+    "lint:fix": "biome check src/ --fix",
+    "format": "biome format src/"
+  },
+  "author": "Rahil Khurshid Ali",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.4.0",
+    "helmet": "^7.1.0",
+    "pino-http": "^10.2.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.8.3",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "lint-staged": "^15.2.9",
+    "pino-pretty": "^11.2.2",
+    "rimraf": "^6.0.1",
+    "supertest": "^7.0.0",
+    "tsup": "^8.2.4",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.4"
+  },
+  "lint-staged": {
+    "*.{js,ts,cjs,mjs,d.cts,d.mts,json,jsonc}": ["biome check --apply --no-errors-on-unmatched"]
+  },
+  "tsup": {
+    "entry": ["src", "!src/**/__tests__/**", "!src/**/*.test.*"],
+    "splitting": false,
+    "sourcemap": true,
+    "clean": true
+  }
+}
