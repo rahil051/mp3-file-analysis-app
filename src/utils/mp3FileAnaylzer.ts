@@ -9,18 +9,15 @@ import path from "node:path";
  * @typedef {MP3FileAnalyzer}
  */
 export class MP3FileAnalyzer {
-  readonly ext = "mp3";
-  private fullPath: string;
+  readonly ext = ".mp3";
 
   constructor(
     public filename: string,
-    public relativePath = "/tmp/uploads",
+    public relativePath: string,
   ) {
     if (path.extname(this.filename) !== this.ext) {
       throw new Error("MP3FileAnalyzer: file isn't mp3");
     }
-
-    this.fullPath = `${this.relativePath}/${this.filename}`;
   }
 
   /**
@@ -32,8 +29,8 @@ export class MP3FileAnalyzer {
    */
   private getBitrate(header: Buffer): number {
     const bitrateIndex = (header[2] & 0xf0) >> 4;
-    const bitrates = [32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320];
-    return bitrates[bitrateIndex] * 1000; // convert to bits per second
+    const bitrates = [null, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320, null];
+    return bitrates[bitrateIndex]! * 1000; // convert to bits per second
   }
 
   /**
@@ -66,11 +63,12 @@ export class MP3FileAnalyzer {
    * Count the number of frames of the mp3 file
    *
    * @public
+   * @param {boolean} [delFileAfter=false]
    * @returns {Promise<number>}
    */
-  public countFrames(): Promise<number> {
+  public countFrames(delFileAfter = false): Promise<number> {
     return new Promise((resolve, reject) => {
-      return fs.readFile(this.fullPath, (err, data) => {
+      return fs.readFile(this.relativePath, (err, data) => {
         if (err) {
           console.error("Error reading file: ", err);
           reject(err);
@@ -97,6 +95,15 @@ export class MP3FileAnalyzer {
           } else {
             offset++; // Move forward by one byte if no sync word is found
           }
+        }
+
+        if (delFileAfter) {
+          return fs.unlink(this.relativePath, (err) => {
+            if (err) {
+              console.error("Error deleting file: ", err);
+            }
+            resolve(frameCount);
+          });
         }
 
         resolve(frameCount);

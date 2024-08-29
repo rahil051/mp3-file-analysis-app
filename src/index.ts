@@ -1,4 +1,5 @@
 import { fileRouter } from "@/api/file/fileRouter";
+import { healthCheckRouter } from "@/api/healthCheck/healthCheckRouter";
 import { env } from "@/config/envConfig";
 import cors from "cors";
 import express, { type Express } from "express";
@@ -18,7 +19,7 @@ app.use(helmet());
 // app.use(requestLogger);
 
 // Routes
-// app.use("/health-check", healthCheckRouter);
+app.use("/health-check", healthCheckRouter);
 app.use("/file", fileRouter);
 
 // TODO: Introduce System Wide Error handlers

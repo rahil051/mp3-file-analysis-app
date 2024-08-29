@@ -11,8 +11,8 @@ import type { NextFunction, Request, Response } from "express";
  */
 export const analyzeMP3File = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log([req.file?.filename, req.file?.path, req.file?.originalname, req.file?.mimetype]);
-    const fileService = new FileService(req.file?.filename);
+    // console.log([req.file?.filename, req.file?.path, req.file?.originalname, req.file?.mimetype]);
+    const fileService = new FileService(req.file);
     const frameCount = await fileService.countFrames();
     // Return json with success message
     res.status(200).json(
@@ -26,6 +26,6 @@ export const analyzeMP3File = asyncHandler(async (req: Request, res: Response, n
   } catch (err) {
     // or Return 500 Internal Server Rrror
     console.error(err);
-    res.status(500).json(new ApiError([], 500, "Internal Server Error"));
+    throw new ApiError({}, 500, "Internal Server Error");
   }
 });

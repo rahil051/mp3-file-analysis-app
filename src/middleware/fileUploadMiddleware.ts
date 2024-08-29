@@ -16,7 +16,9 @@ export class FileUploadMiddleware {
    * @type {*}
    */
   private storage = multer.diskStorage({
-    destination: (req, file, callback) => callback(null, "/tmp/uploads"),
+    destination: (req, file, callback) => {
+      callback(null, `${__dirname}/../../tmp/uploads`);
+    },
     filename: (req, file, callback) => callback(null, `${Date.now()}-${file.originalname}`),
   });
 
