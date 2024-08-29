@@ -1,5 +1,5 @@
-import { ApiError } from "@/types/interfaces/interfaces.common";
-import { Request, Response, NextFunction } from "express";
+import type { ApiError } from "@/types/interfaces/interfaces.common";
+import type { NextFunction, Request, Response } from "express";
 
 /**
  * Handles error responses from throw errors

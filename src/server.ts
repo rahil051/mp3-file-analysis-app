@@ -1,9 +1,9 @@
+import { fileRouter } from "@/api/file/fileRouter";
+import { env } from "@/config/envConfig";
 import cors from "cors";
 import express, { type Express } from "express";
 import helmet from "helmet";
 import { pino } from "pino";
-import { env } from "@/config/envConfig";
-import { fileRouter } from "@/api/file/fileRouter";
 
 const logger = pino({ name: "server start" });
 const app: Express = express();
@@ -14,14 +14,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
 app.use(helmet());
 
-// Request logging
+// TODO: Introduce Request level logging
 // app.use(requestLogger);
 
 // Routes
 // app.use("/health-check", healthCheckRouter);
 app.use("/file", fileRouter);
 
-// Error handlers
+// TODO: Introduce System Wide Error handlers
 // app.use(errorHandler());
 
 // Listen to specified port in .env or default 5000

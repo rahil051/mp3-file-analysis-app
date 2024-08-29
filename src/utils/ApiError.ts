@@ -9,11 +9,11 @@
 export class ApiError extends Error {
   statusCode: number;
   error: unknown;
-  data: [] | {};
+  data: [] | Record<never, never>;
 
-  constructor(data: {} | [], statusCode: number, message: string) {
-     super(message);
-     this.statusCode = statusCode;
-     this.data = data;
+  constructor(data: Record<never, never> | [], statusCode: number, message: string) {
+    super(message);
+    this.statusCode = statusCode;
+    this.data = data;
   }
 }

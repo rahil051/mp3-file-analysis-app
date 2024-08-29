@@ -1,6 +1,6 @@
-import e from "express";
+import path from "node:path";
+import type e from "express";
 import multer from "multer";
-import path from "path";
 
 export class FileUploadMiddleware {
   private _upload: multer.Multer;
@@ -16,10 +16,10 @@ export class FileUploadMiddleware {
    * @type {*}
    */
   private storage = multer.diskStorage({
-    destination: (req, file, callback) => callback(null, '/tmp/uploads'),
-    filename: (req, file, callback) => callback(null, Date.now() + '-' + file.originalname)
+    destination: (req, file, callback) => callback(null, "/tmp/uploads"),
+    filename: (req, file, callback) => callback(null, `${Date.now()}-${file.originalname}`),
   });
-  
+
   /**
    * set mp3 filter for file
    *
@@ -29,14 +29,14 @@ export class FileUploadMiddleware {
    */
   private fileFilter = (req: e.Request, file: Express.Multer.File, callback: multer.FileFilterCallback) => {
     const ext = path.extname(file.originalname).toLowerCase();
-    if (ext === '.mp3') {
+    if (ext === ".mp3") {
       callback(null, true);
     } else {
-      callback(new Error('Only MP3 files are allowed!'));
+      callback(new Error("Only MP3 files are allowed!"));
     }
   };
 
   constructor() {
-    this._upload = multer({ storage: this.storage, fileFilter: this.fileFilter })
+    this._upload = multer({ storage: this.storage, fileFilter: this.fileFilter });
   }
 }

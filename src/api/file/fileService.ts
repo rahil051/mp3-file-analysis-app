@@ -9,7 +9,7 @@ import { MP3FileAnalyzer } from "@/utils/mp3FileAnaylzer";
  */
 export class FileService {
   private static readonly ERROR = {
-    INVALID_OR_NO_FILE: 'INVALID_OR_NO_FILE'
+    INVALID_OR_NO_FILE: "INVALID_OR_NO_FILE",
   };
   private mp3FileAnalyzer: MP3FileAnalyzer;
 

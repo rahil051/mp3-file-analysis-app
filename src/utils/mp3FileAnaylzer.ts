@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 
 /**
  * MP3FileAnalyzer
@@ -9,17 +9,20 @@ import path from "path";
  * @typedef {MP3FileAnalyzer}
  */
 export class MP3FileAnalyzer {
-  readonly ext = 'mp3';
+  readonly ext = "mp3";
   private fullPath: string;
 
-  constructor(public filename: string, public relativePath = '/tmp/uploads') {
+  constructor(
+    public filename: string,
+    public relativePath = "/tmp/uploads",
+  ) {
     if (path.extname(this.filename) !== this.ext) {
-      throw new Error('MP3FileAnalyzer: file isn\'t mp3');
+      throw new Error("MP3FileAnalyzer: file isn't mp3");
     }
 
-    this.fullPath = this.relativePath + '/' + this.filename;
+    this.fullPath = `${this.relativePath}/${this.filename}`;
   }
-  
+
   /**
    * Extract the bitrate index from the header
    *
@@ -28,11 +31,11 @@ export class MP3FileAnalyzer {
    * @returns {number}
    */
   private getBitrate(header: Buffer): number {
-    const bitrateIndex = (header[2] & 0xF0) >> 4;
+    const bitrateIndex = (header[2] & 0xf0) >> 4;
     const bitrates = [32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320];
     return bitrates[bitrateIndex] * 1000; // convert to bits per second
   }
-  
+
   /**
    * Extract the sampling rate from the header
    *
@@ -41,7 +44,7 @@ export class MP3FileAnalyzer {
    * @returns {*}
    */
   private getSamplingRate(header: Buffer) {
-    const samplingRateIndex = (header[2] & 0x0C) >> 2;
+    const samplingRateIndex = (header[2] & 0x0c) >> 2;
     const samplingRates = [44100, 48000, 32000, null];
     return samplingRates[samplingRateIndex];
   }
@@ -58,7 +61,7 @@ export class MP3FileAnalyzer {
   private calculateFrameSize(bitrate: number, samplingRate: number, padding: number) {
     return Math.floor((144 * bitrate) / samplingRate) + padding;
   }
-  
+
   /**
    * Count the number of frames of the mp3 file
    *
@@ -69,7 +72,7 @@ export class MP3FileAnalyzer {
     return new Promise((resolve, reject) => {
       return fs.readFile(this.fullPath, (err, data) => {
         if (err) {
-          console.error('Error reading file: ', err);
+          console.error("Error reading file: ", err);
           reject(err);
         }
 
@@ -77,7 +80,7 @@ export class MP3FileAnalyzer {
         let frameCount = 0;
 
         while (offset < data.length) {
-          if (data[offset] === 0xFF && (data[offset + 1] & 0xE0) === 0xE0) {
+          if (data[offset] === 0xff && (data[offset + 1] & 0xe0) === 0xe0) {
             // We've found the start of a frame (sync word)
             const header = data.subarray(offset, offset + 4);
             const bitrate = this.getBitrate(header);
